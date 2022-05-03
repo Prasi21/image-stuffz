@@ -6,10 +6,12 @@ import cv2 as cv
 #IMREAD_UNCHANGED makes sure the alpha channel is read in
 sign = cv.imread("./images/9.png", IMREAD_UNCHANGED)
 cv.waitKey(0)
-blurred_img = cv.blur(sign,(25,25))
+blurred_img = cv.blur(sign,(5,5))
 # blurred_img = cv.GaussianBlur(sign, (25, 25), 0)
 mask = np.zeros(sign.shape, np.uint8)
 
+cv.imshow("blurred image", blurred_img)
+cv.waitKey(0)
 
 #greyscale
 grey = cv.cvtColor(sign, cv.COLOR_BGR2GRAY)
