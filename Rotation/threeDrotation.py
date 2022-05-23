@@ -31,7 +31,7 @@ def rotateImage(src, alpha, beta, gamma, dx, dy, dz, f):
     A1 = np.array(
         [[1, 0, -w/2],
          [0, 1, -h/2],
-         [0, 0, 0   ],
+         [0, 0, 1   ],
          [0, 0, 1   ]])
 
     
@@ -62,7 +62,7 @@ def rotateImage(src, alpha, beta, gamma, dx, dy, dz, f):
 
     RZ = np.array(
         [[za1, -za2, 0, 0],
-         [za1, za1,  0, 0],
+         [za2, za1,  0, 0],
          [0,   0,    1, 0],
          [0,   0,    0, 1]])
 
@@ -83,6 +83,7 @@ def rotateImage(src, alpha, beta, gamma, dx, dy, dz, f):
          [0, f, h/2, 0],
          [0, 0, 1,   0]])
 
+    #Final tranformation matrix
     trans = np.dot(A2, np.dot(T, np.dot(R, A1)))
 
     # Apply matrix transformation
@@ -98,10 +99,12 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
 # rotateImage(img, img, -25, 125, 40, 0, 0, 200, 200)
 img = cv2.imread('./images/9.png', cv2.IMREAD_UNCHANGED)
 angle = np.zeros(3)
-X = get_truncated_normal(mean=0, sd=30, low=-60, upp=60)
+X = get_truncated_normal(mean=0, sd=30, low=-70, upp=70)
 angle[0:2] = X.rvs(2)
 Y = get_truncated_normal(mean=0, sd=90, low=-180, upp=180)
 angle[2] = Y.rvs(1)
+
+# angle[0], angle[1], angle[2] = 10, 10, 10
 
 dest = rotateImage(img, angle[0], angle[1], angle[2], 0, 0, 400, 200)
 cv2.imwrite("./images/9_3drotate.png", dest)
