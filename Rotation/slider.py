@@ -44,7 +44,8 @@ def get_current_value(current_value):
     return '{: .2f}'.format(current_value.get())
 
 ######### Choose images and translations here!! ###############
-filename = './images/spongebob.png'
+###############################################################
+filename = './images/9.png'
 dx = 0
 dy = 0
 dz = 400
