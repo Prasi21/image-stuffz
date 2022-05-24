@@ -10,8 +10,8 @@ def colour_slicer(channel,  img):
     return colour
 
 
-img = cv.imread("c:/Users/prasi/OneDrive/Documents/Code Practice/image stuffz/apple.jpg")
-
+# img = cv.imread("c:/Users/prasi/OneDrive/Documents/Code Practice/image stuffz/Edge Blending/apple.jpg")
+img = cv.imread("./Edge Blending/apple.jpg")
 #converting the original image from RGB to BGR
 temp = img.copy()
 img[:,:,0::3] = temp[:,:,2::3] 
