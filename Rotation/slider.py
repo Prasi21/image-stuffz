@@ -24,7 +24,7 @@ def create_input_frame(container):
 
 #root window
 root = tk.Tk()
-root.geometry('300x150')
+root.geometry('350x150')
 root.resizable(False,False)
 root.title("Image Controller")
 
@@ -44,11 +44,13 @@ def get_current_value(current_value):
     return '{: .2f}'.format(current_value.get())
 
 ######### Choose images and translations here!! ###############
-filename = './images/spongebob.png'
+###############################################################
+filename = './images/9.png'
 dx = 0
 dy = 0
 dz = 400
 f = 200
+bg_colour = '#0F0F0F0F'
 
 
 # load the image with no rotations
@@ -58,58 +60,41 @@ except NameError:
     initialise = 0
     img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
     dest = rotateImage(img, 0, 0, 0, dx, dy, dz, f)
-    cv2.imwrite("./images/rotating.png", dest)
+    # cv2.imwrite("./images/rotating.png", dest)
 
     fig, ax = plt.subplots()
+    ax.set_facecolor(bg_colour)
     im = ax.imshow(img)
 
 
-def update_image(img):
-    # ax.imshow(img)
-    # fig.canvas.draw_idle()
-    # plt.show()
-    img = cv2.cvtColor(img,cv2.COLOR_RGBA2BGRA)
-    im.set_data(img)
+
+def update_image():
+    x_angle = int(float(get_current_value(x_current_value)))
+    y_angle = int(float(get_current_value(y_current_value)))
+    z_angle = int(float(get_current_value(z_current_value)))
+    # print("x: ",x_angle," y: ",y_angle, "z: ",z_angle)
+
+    img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
+    dest = rotateImage(img, x_angle, y_angle, z_angle, dx, dy, dz, f)
+    # cv2.imwrite("./images/rotating.png", dest)
+
+    dest = cv2.cvtColor(dest,cv2.COLOR_RGBA2BGRA)
+    im.set_data(dest)
     plt.draw(), plt.pause(1e-3)
 
 
 def x_slider_changed(event):
     x_value_label.configure(text=get_current_value(x_current_value))
-    x_angle = int(float(get_current_value(x_current_value)))
-    y_angle=int(float(get_current_value(y_current_value)))
-    z_angle = int(float(get_current_value(z_current_value)))
-    # print("x: ",x_angle," y: ",y_angle, "z: ",z_angle)
-
-    img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
-    dest = rotateImage(img, x_angle, y_angle, z_angle, dx, dy, dz, f)
-    # cv2.imwrite("./images/rotating.png", dest)
-    update_image(dest)
+    update_image()
     
 
 def y_slider_changed(event):
     y_value_label.configure(text=get_current_value(y_current_value))
-    y_angle=int(float(get_current_value(y_current_value)))
-    x_angle = int(float(get_current_value(x_current_value)))
-    z_angle = int(float(get_current_value(z_current_value)))
-    # print("x: ",x_angle," y: ",y_angle, "z: ",z_angle)
-
-    img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
-    dest = rotateImage(img, x_angle, y_angle, z_angle, dx, dy, dz, f)
-    # cv2.imwrite("./images/rotating.png", dest)
-    update_image(dest)
+    update_image()
         
 
 def z_slider_changed(event):
-    z_value_label.configure(text=get_current_value(z_current_value))
-    z_angle = int(float(get_current_value(z_current_value)))
-    x_angle = int(float(get_current_value(x_current_value)))
-    y_angle=int(float(get_current_value(y_current_value)))
-    # print("x: ",x_angle," y: ",y_angle, "z: ",z_angle)
-
-    img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
-    dest = rotateImage(img, x_angle, y_angle, z_angle, dx, dy, dz, f)
-    # cv2.imwrite("./images/rotating.png", dest)
-    update_image(dest)
+    update_image()
 
 
 #label for slider

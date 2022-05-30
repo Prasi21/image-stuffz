@@ -95,19 +95,20 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 
-# rotateImage(img, img, 0, 45, 0, 0, 0, 200, 200)
-# rotateImage(img, img, -25, 125, 40, 0, 0, 200, 200)
-img = cv2.imread('./images/9.png', cv2.IMREAD_UNCHANGED)
-angle = np.zeros(3)
-X = get_truncated_normal(mean=0, sd=30, low=-70, upp=70)
-angle[0:2] = X.rvs(2)
-Y = get_truncated_normal(mean=0, sd=90, low=-180, upp=180)
-angle[2] = Y.rvs(1)
+if __name__ == "main":
+    # rotateImage(img, img, 0, 45, 0, 0, 0, 200, 200)
+    # rotateImage(img, img, -25, 125, 40, 0, 0, 200, 200)
+    img = cv2.imread('./images/9.png', cv2.IMREAD_UNCHANGED)
+    angle = np.zeros(3)
+    X = get_truncated_normal(mean=0, sd=30, low=-70, upp=70)
+    angle[0:2] = X.rvs(2)
+    Y = get_truncated_normal(mean=0, sd=90, low=-180, upp=180)
+    angle[2] = Y.rvs(1)
 
-# angle[0], angle[1], angle[2] = 10, 10, 10
+    angle[0], angle[1], angle[2] = 10, 10, 10
 
-dest = rotateImage(img, angle[0], angle[1], angle[2], 0, 0, 400, 200)
-cv2.imwrite("./images/9_3drotate.png", dest)
-# cv2.imshow("Original Image", img)
-# cv2.imshow("Rotated Image", dest)
-cv2.waitKey(0)
+    dest = rotateImage(img, angle[0], angle[1], angle[2], 0, 0, 400, 200)
+    cv2.imwrite("./images/9_3drotate.png", dest)
+    # cv2.imshow("Original Image", img)
+    # cv2.imshow("Rotated Image", dest)
+    cv2.waitKey(0)
