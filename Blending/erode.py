@@ -4,6 +4,7 @@ import cv2 as cv2
 from imgaug import augmenters as iaa
 
 
+# Function used by Tabelini to apply colour to the entire image
 def augment_target(target, multiply_value=None, add_value=None):
     if add_value is None:
         add_value = float(np.random.uniform(-120, 120))
@@ -19,11 +20,9 @@ def augment_target(target, multiply_value=None, add_value=None):
 
 
 
-template = cv2.imread("./images/1.png",cv2.IMREAD_UNCHANGED).astype(np.float32) / 255.0
-target = cv2.imread("./images/00014.png").astype(np.float32) / 255.0
-# target, add_value, multiply_value = augment_target(target)
 
-
+# Function used by me to check if methods of creating the mask produce the same result
+# Compares two images to see if they are identical
 def compareImage(original, duplicate):
     if original.shape == duplicate.shape:
         print("The images have same size and channels")
@@ -44,32 +43,24 @@ def get_mask_from_image(alpha_image):
 
     return mask
 
-mask = get_mask_from_image(template)
 
-# ret, mask3 = cv2.threshold(template[:, :, 3], 0, 255, cv2.THRESH_BINARY)    
-# mask1 = np.ones((200,200,3),dtype=np.uint8)
-# mask3 = cv2.bitwise_and(mask1, mask1, mask=mask3)
-# print("mask 3: ",mask3[0,0,0].type)
-# print("mask 1: ",mask[0,0,0].type)
+template = cv2.imread("./images/9.png",cv2.IMREAD_UNCHANGED)#.astype(np.float32) / 255.0
+target = cv2.imread("./images/00014.png")#.astype(np.float32) / 255.0
+# target, add_value, multiply_value = augment_target(target)
 
+# mask = get_mask_from_image(template)
 
-# compareImage(mask, mask3)
+# My method of creating a mask
+ret, mask1 = cv2.threshold(template[:, :, 3], 0, 255, cv2.THRESH_BINARY)    
+mask = np.ones((200,200,3),dtype=np.uint8)
+mask = cv2.bitwise_and(mask, mask, mask=mask1)
 
-# np.set_printoptions(threshold=np.inf)
-# print(mask)
-
-# cv2.imshow("mask",mask)
-# cv2.imshow("mask3",mask3)
-# cv2.imshow("bg",target)
-cv2.imshow("original",template)
 
 steps = 3
 
-template = (template*255).astype(np.uint8)
-target = (target * 255).astype(np.uint8)
 
-mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=(0, 0, 0))
 
+# mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=(0, 0, 0)) #? do we need this
 blend_mask = mask.astype(np.float32) * (1.0 / steps)
 kernel = np.ones((3, 3), np.uint8)
 
@@ -78,24 +69,21 @@ for step in range(steps - 1):
     mask = cv2.erode(mask, kernel)
     blend_mask += mask * (1.0 / steps)
 
-# cv2.imshow("blend mask",blend_mask)
+# blend_mask = blend_mask[1:-1, 1:-1] #? along with this?
 
 x0 = 500
 y0 = 500
 x1 = x0 + template.shape[1]
 y1 = y0 + template.shape[1]
-blend_mask = blend_mask[1:-1, 1:-1]
-print("template: ",template.shape,"\nmask: ",blend_mask.shape)
-# cv2.imshow("bg",target[y0:y1, x0:x1])
-cv2.imshow("bgfull",target)
 
 
 blended = (target[y0:y1, x0:x1] * (1 - blend_mask)) + (template[:, :, [0, 1, 2]] * blend_mask)
-blended = blended.astype(np.float32) / 255.0
+target[y0:y1, x0:x1] = blended
+blended = blended.astype(np.float32) / 255.0 #uneeded when placed on to bg
 
 
-# print("blend mask",blend_mask.shape())
-# blended = cv2.bitwise_and(blend_mask, )
-cv2.imshow("blended",blended)
+cv2.imshow("bgfull",target)
+cv2.imshow("Original",template)
+
 
 cv2.waitKey(0)
