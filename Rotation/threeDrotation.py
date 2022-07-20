@@ -95,7 +95,7 @@ def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
         (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     # rotateImage(img, img, 0, 45, 0, 0, 0, 200, 200)
     # rotateImage(img, img, -25, 125, 40, 0, 0, 200, 200)
     img = cv2.imread('./images/9.png', cv2.IMREAD_UNCHANGED)
@@ -105,9 +105,11 @@ if __name__ == "main":
     Y = get_truncated_normal(mean=0, sd=90, low=-180, upp=180)
     angle[2] = Y.rvs(1)
 
-    angle[0], angle[1], angle[2] = 10, 10, 10
+    # angle[0], angle[1], angle[2] = 10, 10, 10
 
-    dest = rotateImage(img, angle[0], angle[1], angle[2], 0, 0, 400, 200)
+    pad = 50
+    img = cv2.copyMakeBorder(img, pad, pad, pad, pad, cv2.BORDER_CONSTANT)
+    dest = rotateImage(img, angle[0], angle[1], angle[2], 0, 0, 200, 200)
     cv2.imwrite("./images/9_3drotate.png", dest)
     # cv2.imshow("Original Image", img)
     # cv2.imshow("Rotated Image", dest)

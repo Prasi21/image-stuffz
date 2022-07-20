@@ -43,14 +43,26 @@ z_current_value = tk.DoubleVar()
 def get_current_value(current_value):
     return '{: .2f}'.format(current_value.get())
 
+###############################################################
 ######### Choose images and translations here!! ###############
 ###############################################################
 filename = './images/9.png'
 dx = 0
 dy = 0
-dz = 400
-f = 200
-bg_colour = '#0F0F0F0F'
+pad = 0
+new_size = 240 #320
+if(new_size>320):
+    dz = 320 + 1*(new_size-320) #new_size
+    f = 200 + new_size/5
+else:
+    dz = 320 - 0.25*(320-new_size)
+    f = 200
+print(f"size = {new_size} dz = {dz} f = {f}")
+
+X_range = 70
+Y_range = 70
+Z_range = 180
+bg_colour ='blue'# '#0F0F0F0F'
 
 
 # load the image with no rotations
@@ -59,6 +71,7 @@ try:
 except NameError:
     initialise = 0
     img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
+    img = cv2.copyMakeBorder(img, pad, pad, pad, pad, cv2.BORDER_CONSTANT)
     dest = rotateImage(img, 0, 0, 0, dx, dy, dz, f)
     # cv2.imwrite("./images/rotating.png", dest)
 
@@ -73,10 +86,11 @@ def update_image():
     y_angle = int(float(get_current_value(y_current_value)))
     z_angle = int(float(get_current_value(z_current_value)))
     # print("x: ",x_angle," y: ",y_angle, "z: ",z_angle)
-
     img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
+    img = cv2.copyMakeBorder(img, pad, pad, pad, pad, cv2.BORDER_CONSTANT)
+    img = cv2.resize(img, (new_size, new_size))
     dest = rotateImage(img, x_angle, y_angle, z_angle, dx, dy, dz, f)
-    # cv2.imwrite("./images/rotating.png", dest)
+    cv2.imwrite("./images/rotating.png", dest)
 
     dest = cv2.cvtColor(dest,cv2.COLOR_RGBA2BGRA)
     im.set_data(dest)
@@ -94,6 +108,7 @@ def y_slider_changed(event):
         
 
 def z_slider_changed(event):
+    z_value_label.configure(text=get_current_value(z_current_value))
     update_image()
 
 
@@ -134,11 +149,11 @@ z_slider_label.grid(
 
 #slider 
 
-def create_slider(slider, row, slider_changed, current_value):
+def create_slider(slider, row, slider_changed, current_value, range):
     slider = ttk.Scale(
         input_frame,
-        from_=-180, # min value
-        to=180,  # max value
+        from_=-range, # min value
+        to=range,  # max value
         orient='horizontal', #vertical
         command=slider_changed,
         variable=current_value
@@ -153,9 +168,9 @@ def create_slider(slider, row, slider_changed, current_value):
 x_slider = 0
 y_slider = 0
 z_slider = 0
-create_slider(x_slider, 0, x_slider_changed, x_current_value)
-create_slider(y_slider, 1, y_slider_changed, y_current_value)
-create_slider(z_slider, 2, z_slider_changed, z_current_value)
+create_slider(x_slider, 0, x_slider_changed, x_current_value, X_range)
+create_slider(y_slider, 1, y_slider_changed, y_current_value, Y_range)
+create_slider(z_slider, 2, z_slider_changed, z_current_value, Z_range)
 
 
 
