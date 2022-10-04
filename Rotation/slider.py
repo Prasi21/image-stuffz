@@ -50,13 +50,15 @@ filename = './images/9.png'
 dx = 0
 dy = 0
 pad = 0
-new_size = 240 #320
+new_size = 240
 if(new_size>320):
     dz = 320 + 1*(new_size-320) #new_size
     f = 200 + new_size/5
 else:
     dz = 320 - 0.25*(320-new_size)
     f = 200
+# f *= 2
+# dz *= 2
 print(f"size = {new_size} dz = {dz} f = {f}")
 
 X_range = 70

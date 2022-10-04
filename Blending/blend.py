@@ -2,6 +2,47 @@ import time
 import numpy as np
 import matplotlib as plt
 import cv2
+from imgaug import augmenters as iaa
+
+# Function used by Tabelini to apply colour to the entire image
+def augment_target(target, multiply_value=None, add_value=None):
+    if add_value is None:
+        add_value = float(np.random.uniform(-120, 120))
+    if multiply_value is None:
+        multiply_value = float(np.random.uniform(0.75, 1.25))
+
+    seq = iaa.Sequential([
+        iaa.Add((add_value, add_value)),
+        iaa.Multiply((multiply_value, multiply_value)),
+    ])
+    target = (target * 255.0).astype(np.uint8)
+    return (seq.augment_image(target) / 255.0).astype(np.float32), add_value, multiply_value
+
+
+
+
+# Function used by me to check if methods of creating the mask produce the same result
+# Compares two images to see if they are identical
+def compareImage(original, duplicate):
+    if original.shape == duplicate.shape:
+        print("The images have same size and channels")
+        difference = cv2.subtract(original, duplicate)
+        b, g, r = cv2.split(difference)
+        if cv2.countNonZero(b) == 0 and cv2.countNonZero(g) == 0 and cv2.countNonZero(r) == 0:
+            print("The images are completely Equal")
+    else:
+        print("different shapes")
+
+#threshold method achives same in less lines
+def get_mask_from_image(alpha_image):
+    alpha_channel = alpha_image[:, :, -1]
+    mask = np.zeros_like(alpha_image[:, :, :-1])
+    mask[:, :, 0][alpha_channel > 0] = 1
+    mask[:, :, 1][alpha_channel > 0] = 1
+    mask[:, :, 2][alpha_channel > 0] = 1
+
+    return mask
+
 
 
 def main():

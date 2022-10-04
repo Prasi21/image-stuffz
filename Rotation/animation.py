@@ -7,7 +7,7 @@ import math
 import sys
 from threeDrotation import rotateImage, get_truncated_normal
 
-filename = './images/spongebob.png'
+filename = './images/9.png'
 dx = 0
 dy = 0
 dz = 400
